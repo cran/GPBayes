@@ -1,4 +1,4 @@
-5ac1522b8d80612c00ddc8b4185175f2 *DESCRIPTION
+0b92977d9e8bb457096149ed2dd8231a *DESCRIPTION
 d0639991c7081da91d079e4a4f5b8f8c *NAMESPACE
 6f35b7aaaab722ff8dec8241b34fbaf7 *R/AllClass.R
 06cd99b6be9510e8c4c8c063fae4dff7 *R/GaSPUtils.R
@@ -7,10 +7,10 @@ bd5509a03189ef262d4bea54ced8f030 *R/utils.R
 3d55a41e9e6dd19aceb4ee2097565b07 *cleanup
 c0175e42fe883e78ee5e401ff1d154cf *configure
 b183b757152447ced42e4eee2482d3a9 *configure.ac
-0947764e7ab4f1d8b1e50fea25e5dcd8 *inst/CITATION
+0baeb61484f212026021198daac71549 *inst/CITATION
 1a6f49cfc5614cd04f66be0aed6ca858 *man/BesselK.Rd
 2cb22e54ab2a32579ef5d8d267b9e11e *man/CH.Rd
-674f1537ad647fac5b00d4b42988548e *man/GPBayes-package.Rd
+3be8583145fa5762025fa2a076a74a2a *man/GPBayes-package.Rd
 257646d3140fb05d3c18f7d8ce9d5773 *man/GaSP.Rd
 102dc6fd3f6c138a7a6a956738b6ea82 *man/HypergU.Rd
 f6b3ae2b0fbc9cd9a1051eb2322e4cb7 *man/cauchy.Rd
