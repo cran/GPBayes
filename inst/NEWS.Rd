@@ -3,6 +3,13 @@
 \newcommand{\ghpr}{\href{https://github.com/pulongma/GPBayes/pull/#1}{##1}}
 \newcommand{\ghit}{\href{https://github.com/pulongma/GPBayes/issues/#1}{##1}}
 
+\section{Changes in GPBayes version 0.1.0-4 (2022-8-01)}{
+	\itemize{
+		\item Updated documentation for several functions.  
+		\item Added limiting values for the Matérn and Confluent Hypergeometric covariance functions when their range parameters go to zero.
+	}
+}
+
 \section{Changes in GPBayes version 0.1.0-3 (2021-12-01)}{
 	\itemize{
 		\item Added the package NEWS. 
