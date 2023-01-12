@@ -2,14 +2,14 @@
 ## Configure.ac for GPBayes
 ##
 ##
-##
+## Copied and adapted from RcppGSL package 
 ## Process this file with autoconf to produce a configure script.
 ##
 AC_INIT(GPBayes, mpulong@gmail.com, https://github.com/pulongma/GPBayes/issues)
 
 
 # Checks for common programs using default macros
-AC_PROG_CC
+## AC_PROG_CC
 
 ## Use gsl-config to find arguments for compiler and linker flags
 ##
@@ -28,4 +28,5 @@ fi
 AC_SUBST(GSL_CFLAGS)
 AC_SUBST(GSL_LIBS)
 
+AC_CONFIG_FILES([src/Makevars])
 AC_OUTPUT

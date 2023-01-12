@@ -1,4 +1,4 @@
-c606c2be5720b99ea8a658c1aecd18bc *DESCRIPTION
+caea58efd2f974fdc2dfe3bf48eb02b6 *DESCRIPTION
 d0639991c7081da91d079e4a4f5b8f8c *NAMESPACE
 6f35b7aaaab722ff8dec8241b34fbaf7 *R/AllClass.R
 9724a0364da2b69ab08fd480c390b28b *R/GaSPUtils.R
@@ -6,10 +6,10 @@ d0639991c7081da91d079e4a4f5b8f8c *NAMESPACE
 535dfa84bc34a27d99948a9642fe3919 *R/startup.R
 bd5509a03189ef262d4bea54ced8f030 *R/utils.R
 3d55a41e9e6dd19aceb4ee2097565b07 *cleanup
-467ad12a5ebb2043c379b778228596b0 *configure
-b183b757152447ced42e4eee2482d3a9 *configure.ac
+9313c214a088fce5e900734b31545d4e *configure
+85fbb5c9e731c2d56f241e9602d263dc *configure.ac
 0baeb61484f212026021198daac71549 *inst/CITATION
-2236b6d00ed232b72d1f8bc7c29db3bc *inst/NEWS.Rd
+323d28f3db49a0ddfcf596a8ee6c5422 *inst/NEWS.Rd
 1a6f49cfc5614cd04f66be0aed6ca858 *man/BesselK.Rd
 2cb22e54ab2a32579ef5d8d267b9e11e *man/CH.Rd
 3be8583145fa5762025fa2a076a74a2a *man/GPBayes-package.Rd
