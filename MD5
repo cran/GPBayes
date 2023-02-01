@@ -1,4 +1,4 @@
-caea58efd2f974fdc2dfe3bf48eb02b6 *DESCRIPTION
+b66f82ccc6c61a97361f88ffbd7bc139 *DESCRIPTION
 d0639991c7081da91d079e4a4f5b8f8c *NAMESPACE
 6f35b7aaaab722ff8dec8241b34fbaf7 *R/AllClass.R
 9724a0364da2b69ab08fd480c390b28b *R/GaSPUtils.R
@@ -6,10 +6,10 @@ d0639991c7081da91d079e4a4f5b8f8c *NAMESPACE
 535dfa84bc34a27d99948a9642fe3919 *R/startup.R
 bd5509a03189ef262d4bea54ced8f030 *R/utils.R
 3d55a41e9e6dd19aceb4ee2097565b07 *cleanup
-9313c214a088fce5e900734b31545d4e *configure
-85fbb5c9e731c2d56f241e9602d263dc *configure.ac
+c5eefd0f00ce6f5c7ec7ce3de41e5021 *configure
+1485366cd86b1bfe46bf3f7eedb35c70 *configure.ac
 0baeb61484f212026021198daac71549 *inst/CITATION
-323d28f3db49a0ddfcf596a8ee6c5422 *inst/NEWS.Rd
+922b7ccb55fcc9ff24edde830d9d8591 *inst/NEWS.Rd
 1a6f49cfc5614cd04f66be0aed6ca858 *man/BesselK.Rd
 2cb22e54ab2a32579ef5d8d267b9e11e *man/CH.Rd
 3be8583145fa5762025fa2a076a74a2a *man/GPBayes-package.Rd
@@ -34,8 +34,8 @@ c3dcd716fa18c6727f089241c444eb55 *man/gp.sim.Rd
 0cc2838346972f01475b3bbd34e62351 *man/loglik.Rd
 66fcaecacd3e9ec0866cc8c6f526f5f8 *man/matern.Rd
 8dfd6e76ddebd75e7ad0edd774d927f5 *man/powexp.Rd
-3f13f28953946e85b51f6bad58e00220 *src/Makevars.in
-281be17a0fded8cef1533d6bd6d2d7ad *src/Makevars.win
+caf4452c1c9ebd67fd3957dfc0c19586 *src/Makevars.in
+cce5e35c45e4a192dde64ae67054618b *src/Makevars.win
 2bd62307a88008e553d58a905f5dac00 *src/RcppExports.cpp
 a44ffcea36f45adc4088ea5b87b7a046 *src/SPtool.cpp
 6601ae240f6c3db44852e702ae7f5a5f *src/SPtool.h
