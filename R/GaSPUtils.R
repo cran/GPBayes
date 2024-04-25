@@ -39,7 +39,7 @@
 #' where \eqn{\alpha} is the tail decay parameter. \eqn{\beta} is the range parameter.
 #' \eqn{\nu} is the smoothness parameter. \eqn{\mathcal{U}(\cdot)} is the confluent hypergeometric
 #' function of the second kind. For details about this covariance, 
-#' see Ma and Bhadra (2019) at \url{https://arxiv.org/abs/1911.05865}.  
+#' see Ma and Bhadra (2023; \doi{10.1080/01621459.2022.2027775}).  
 #' }
 #' \item{cauchy}{The generalized Cauchy covariance is given by
 #' \deqn{C(h) = \left\{ 1 + \left( \frac{h}{\phi} \right)^{\nu}  
@@ -291,19 +291,52 @@ gp <- function(formula=~1, output, input, param, smooth.est=FALSE,
     }
 
     if(!exists("tail", where=param)){
-      if(cov.model$form=="isotropic"){
+      if(cov.model$form=="isotropic" || cov.model$form=="ARD"){
         param$tail = 0.5
       }else{
         param$tail = rep(0.5, Dim)
       }
+    }else{
+      tail = param$tail 
+      if(cov.model$form=="isotropic" || cov.model$form=="ARD"){
+        if(length(tail)>1){
+          #stop("A single value should be specified in isotropic and ARD cases.")
+          param$tail = tail[1]
+        }
+      }else{
+
+        if(length(tail)==1){
+          param$tail = rep(tail, Dim)
+        }else if(length(tail)==Dim){
+          param$tail = tail
+        }else{
+          stop("A vector for tail parameter should be specified in tensor form.")
+        }
+      }
     }
 
     if(!exists("nu", where=param)){
-      if(cov.model$form=="isotropic"){
+      if(cov.model$form=="isotropic" || cov.model$form=="ARD"){
         param$nu = 0.5
       }else{
         param$nu = rep(0.5, Dim)
       }
+    }else{
+      nu = param$nu 
+      if(cov.model$form=="isotropic" || cov.model$form=="ARD"){
+        if(length(nu)>1){
+          #stop("A single value should be specified in isotropic and ARD cases.")
+          param$nu = nu[1]
+        }
+      }else{
+        if(length(nu)==1){
+          param$nu = rep(nu, Dim)
+        }else if(length(nu)==Dim){
+          param$nu = nu
+        }else{
+          stop("A vector for smoothness parameter should be specified in tensor form.")
+        }
+      }      
     }
     
   }
@@ -461,21 +494,59 @@ gp.mcmc <- function(obj, input.new=NULL, method="Cauchy_prior", prior=list(), pr
     if(!exists("nugget", where=proposal_new)){
       proposal_new$nugget = 0.1
     }
-  }else if(cov.model$form=="tensor" ||cov.model$form=="ARD"){
+  }else if(cov.model$form=="tensor"){
 
     if(!exists("range", where=proposal_new)){
       proposal_new$range = rep(0.1, Dim)
+    }else{
+      if(length(proposal_new$range)!=Dim){
+        stop("Specify a numerical vector with correct dimension in the proposal variance for range.\n")
+      }
     }
     if(!exists("tail", where=proposal_new)){
       proposal_new$tail = rep(0.1, Dim)
+    }else{
+      if(length(proposal_new$tail)!=Dim){
+        stop("Specify a numerical vector with correct dimension in the proposal variance for tail\n")
+      }
     }
     if(!exists("nu", where=proposal_new)){
       proposal_new$nu = rep(0.1, Dim)
+    }else{
+      if(length(proposal_new$nu)!=Dim){
+        stop("Specify a numerical vector with correct dimension in the proposal variance for nu\n")
+      }
     }
     if(!exists("nugget", where=proposal_new)){
       proposal_new$nugget = 0.1
     }   
 
+  }else if(cov.model$form=="ARD"){
+
+    if(!exists("range", where=proposal_new)){
+      proposal_new$range = rep(0.1, Dim)
+    }else{
+      if(length(proposal_new$range)!=Dim){
+        stop("Specify a numerical vector with correct dimension in the proposal variance for range.\n")
+      }
+    }
+    if(!exists("tail", where=proposal_new)){
+      proposal_new$tail = 0.1
+    }else{
+      if(length(proposal_new$tail)!=1){
+        stop("Specify a numerical value in the proposal variance for tail.\n")
+      }
+    }
+    if(!exists("nu", where=proposal_new)){
+      proposal_new$nu = 0.1
+    }else{
+      if(length(proposal_new$nu)!=1){
+        stop("Specify a numerical value in the propoal variance for nu.\n")
+      }
+    }
+    if(!exists("nugget", where=proposal_new)){
+      proposal_new$nugget = 0.1
+    }
   }else{
     stop("gp.mcmc: the form of covariance function is not yet supported.\n")
   }
@@ -740,7 +811,7 @@ gp.optim <- function(obj, method="MMLE", opt=NULL, bound=NULL){
 #' 
 #' @seealso \link{GPBayes-package}, \code{\link{GaSP}}, \linkS4class{gp}, \code{\link{gp.mcmc}}, \code{\link{gp.optim}}
 #' @export
-#' @return a list of predictive mean, predictive standard deviation, 95% predictive intervals
+#' @return a list of predictive mean, predictive standard deviation, 95\% predictive intervals
 #' 
 #' @examples 
 #'
@@ -812,7 +883,7 @@ gp.predict <- function(obj, input.new, method="Bayes"){
     cov.obspred = sig2*kernel(dobspred, range, tail, nu, cov.model)
     dpred = distance(input.new, input.new, form, dtype)
     cov.pred = kernel(dpred, range, tail, nu, cov.model)
-    cov.pred = sig2*cov.pred + nugget*diag(nrow(cov.pred))
+    cov.pred = sig2*(cov.pred + nugget*diag(nrow(cov.pred)))
 
     bhat = param$coeff
     QInv = chol2inv(chol(cov.obs))
@@ -933,7 +1004,7 @@ gp.predict <- function(obj, input.new, method="Bayes"){
 #' where \eqn{\alpha} is the tail decay parameter. \eqn{\beta} is the range parameter.
 #' \eqn{\nu} is the smoothness parameter. \eqn{\mathcal{U}(\cdot)} is the confluent hypergeometric
 #' function of the second kind. For details about this covariance, 
-#' see Ma and Bhadra (2019) at \url{https://arxiv.org/abs/1911.05865}.  
+#' see Ma and Bhadra (2023; \doi{10.1080/01621459.2022.2027775}).  
 #' }
 #' \item{cauchy}{The generalized Cauchy covariance is given by
 #' \deqn{C(h) = \left\{ 1 + \left( \frac{h}{\phi} \right)^{\nu}  
@@ -1142,6 +1213,62 @@ gp.sim <- function(formula=~1, input, param, cov.model=list(family="CH",
   
   return(list(input=input, param=param))
 }
+###########################################################################################
+###########################################################################################
+
+
+#' @title Perform conditional simulation from a Gaussian process
+#' @description This function simulate from the Gaussian process model conditional on existing 
+#' data (i.e., locations, observations). This is known as conditional simulation in geostatistics, which 
+#' simulates realizations from the (posterior) predictive distribution of the process given the data. 
+#' @param obj an \code{S4} object \linkS4class{gp}
+#' 
+#' @param XX a matrix of new locations where conditional simulation is performed. 
+#'
+#' @param nsample number of conditional simulations default at 1
+#'
+#' @param seed random generation seed default to be \code{NULL}. 
+#' 
+#' @return an array (vector or matrix) of conditional simulations
+#'
+#' @export
+#'  
+#'
+#'
+gp.condsim = function(obj, XX, nsample=1, seed=NULL){
+  if(!is.null(seed)){
+    set.seed(seed)
+  }
+
+  if(!is.matrix(XX)){
+    #message("Converting XX to a matrix...\n")
+    XX = as.matrix(XX)
+  }
+
+  formula = obj@formula
+  output = obj@output
+  input = obj@input
+  param = obj@param
+  cov.model = obj@cov.model
+  family = cov.model$family 
+  form = cov.model$form 
+  dtype = obj@dtype
+
+  Dim = dim(input)[2]
+  colnames(input) = paste0("x", 1:Dim)
+  df = data.frame(input)
+  H = model.matrix(formula, df)
+  
+  colnames(XX) = paste0("x", 1:Dim)
+  df = data.frame(XX)
+  Hnew = model.matrix(formula, df)
+ 
+
+  pred.list = condsim(output,H,input,XX,Hnew,param,cov.model,dtype,nsample) 
+  predmat = drop(simplify2array(pred.list))
+
+  return(predmat)
+}
 
 ###########################################################################################
 ##########################################################################################
@@ -1190,7 +1317,7 @@ gp.sim <- function(formula=~1, input, param, cov.model=list(family="CH",
 #' where \eqn{\alpha} is the tail decay parameter. \eqn{\beta} is the range parameter.
 #' \eqn{\nu} is the smoothness parameter. \eqn{\mathcal{U}(\cdot)} is the confluent hypergeometric
 #' function of the second kind. For details about this covariance, 
-#' see Ma and Bhadra (2019) at \url{https://arxiv.org/abs/1911.05865}.  
+#' see Ma and Bhadra (2023; \doi{10.1080/01621459.2022.2027775}).  
 #' }
 #' \item{cauchy}{The generalized Cauchy covariance is given by
 #' \deqn{C(h) = \left\{ 1 + \left( \frac{h}{\phi} \right)^{\nu}  
@@ -1557,15 +1684,20 @@ gp.get.mcmc = function(obj, burnin=500){
 ##########################################################################################
 #' @title Fisher information matrix 
 #' @description This function computes the Fisher information matrix \eqn{I(\sigma^2, \boldsymbol \theta)} for a 
-#' Gaussian process model. 
-#' The standard likelihood is defined as 
-#' \deqn{ L(\mathbf{b}, \sigma^2, \boldsymbol \theta; \mathbf{y}) = \mathcal{N}_n(\mathbf{H}\mathbf{b}, \sigma^2 \mathbf{R}),
+#' Gaussian process model \eqn{y(\cdot) \sim \mathcal{GP}(h^\top(\mathbf{x})\mathbf{b}, \sigma^2 c(\cdot, \cdot) )}, where
+#' \eqn{c(\mathbf{x}_1, \mathbf{x}_2) = r(\mathbf{x}_1, \mathbf{x}_2) + \tau^2\mathbf{1}(\mathbf{x}_1=\mathbf{x}_2) } with correlation function
+#' \eqn{r(\cdot, \cdot)} and nugget parameter \eqn{\tau^2}; \eqn{\mathbf{b}} is a vector of regression coefficients, 
+#' \eqn{\sigma^2} is the variance parameter (or partial sill). 
+#'
+#'
+#' Given \eqn{n} data points that are assumed to be realizations from the GP model,    
+#' the standard likelihood is defined as 
+#' \deqn{ L(\mathbf{b}, \sigma^2, \boldsymbol \theta; \mathbf{y}) = \mathcal{N}_n(\mathbf{H}\mathbf{b}, \sigma^2 (\mathbf{R} + \tau^2\mathbf{I}) ),
 #' }
 #' where \eqn{\mathbf{y}:=(y(\mathbf{x}_1), \ldots, y(\mathbf{x}_n))^\top} is a vector of \eqn{n} observations.
-#' \eqn{\mathbf{H}} is a matrix of covariates, \eqn{\mathbf{b}} is a vector of regression coefficients, 
-#' \eqn{\sigma^2} is the variance parameter, \eqn{\boldsymbol \theta} contains correlation
-#' parameters and nugget parameter, \eqn{\mathbf{R}} denotes the correlation matrix 
-#' plus nugget variance on the main diagonal.
+#' \eqn{\mathbf{H}} is a matrix of covariates, \eqn{\boldsymbol \theta} contains correlation
+#' parameters and nugget parameter, \eqn{\mathbf{R}} denotes the \eqn{n}-by-\eqn{n} correlation matrix. 
+#' 
 #' 
 #' The integrated likelihood is defined as
 #' \deqn{
@@ -1626,7 +1758,7 @@ gp.get.mcmc = function(obj, burnin=500){
 #' where \eqn{\alpha} is the tail decay parameter. \eqn{\beta} is the range parameter.
 #' \eqn{\nu} is the smoothness parameter. \eqn{\mathcal{U}(\cdot)} is the confluent hypergeometric
 #' function of the second kind. For details about this covariance, 
-#' see Ma and Bhadra (2019) at \url{https://arxiv.org/abs/1911.05865}.  
+#' see Ma and Bhadra (2023; \doi{10.1080/01621459.2022.2027775}).  
 #' }
 #' \item{cauchy}{The generalized Cauchy covariance is given by
 #' \deqn{C(h) = \left\{ 1 + \left( \frac{h}{\phi} \right)^{\nu}  
@@ -1903,7 +2035,7 @@ gp.fisher <- function(obj=NULL, intloglik=FALSE, formula=~1, input=NULL, param=N
 #' @author Pulong Ma \email{mpulong@@gmail.com}
 #'  
 #' @seealso \link{GPBayes-package}, \code{\link{GaSP}}, \code{\link{gp}}, 
-#' @return a list containingg \strong{pD}, \strong{DIC}, \strong{lppd}, \strong{ljpd}.
+#' @return a list containing \strong{pD}, \strong{DIC}, \strong{lppd}, \strong{ljpd}.
 #' @export 
 #' @references 
 #' \itemize{
